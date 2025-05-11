@@ -1,4 +1,17 @@
 import { Link, Outlet, useNavigate } from 'react-router-dom';
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuIndicator,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  NavigationMenuViewport,
+} from "@/components/ui/navigation-menu"
+import { Button } from "@/components/ui/button";
+
+
 
 import { useAuth } from './providers/auth-provider';
 
@@ -8,23 +21,25 @@ function BasicLayout() {
 
   return (
     <div>
-      <h1>layout</h1>
-      <ul>
-        <li>
-          <Link to="/">Public Page</Link>
-        </li>
-        <li>
-          <Link to="/protected">Protected Page</Link>
-        </li>
-        <li>
-          <Link to="/404">404</Link>
-        </li>
-      </ul>
-
-      {isAuthenticated ? (
-        <button onClick={() => signOut(() => navigate('/login'))}>Sign out</button>
-      ) : null}
-
+      <div className="flex w-full">
+        <div className="flex-1" />
+        <NavigationMenu>
+          <NavigationMenuList className="ml-auto flex">
+            <NavigationMenuItem>
+              <Button variant="ghost" className="text-lg">
+                ...(Role)
+              </Button>
+            </NavigationMenuItem>
+            {isAuthenticated ? (
+              <NavigationMenuItem>
+                <Button variant="ghost" className="text-lg" onClick={() => signOut(() => navigate('/login'))}>
+                    Sign Out
+                </Button>
+              </NavigationMenuItem>
+            ) : null}
+          </NavigationMenuList>
+        </NavigationMenu>
+      </div>
       <Outlet />
     </div>
   );

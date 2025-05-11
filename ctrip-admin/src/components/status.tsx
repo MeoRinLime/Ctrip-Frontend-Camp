@@ -84,7 +84,7 @@ export function StatusCell({ row }: { row: Post }) {
           {rejectAlertDialog}
         </>
       ) : (
-        <div>
+        <div className="flex">
         <DropdownMenu>
           <DropdownMenuTrigger>
             <Button variant="destructive">Rejected</Button>
@@ -93,7 +93,9 @@ export function StatusCell({ row }: { row: Post }) {
             <DropdownMenuItem onSelect={approvePost}>Approve</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-        &nbsp;&nbsp;{row.rejection_message}
+        <div className="max-w-[200px] break-words whitespace-pre-line pl-3">
+        {row.rejection_message}
+        </div>
         </div>
       )}
     </div>
