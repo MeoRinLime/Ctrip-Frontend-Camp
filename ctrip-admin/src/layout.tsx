@@ -8,10 +8,8 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
   NavigationMenuViewport,
-} from "@/components/ui/navigation-menu"
-import { Button } from "@/components/ui/button";
-
-
+} from '@/components/ui/navigation-menu';
+import { Button } from '@/components/ui/button';
 
 import { useAuth } from './providers/auth-provider';
 
@@ -32,8 +30,12 @@ function BasicLayout() {
             </NavigationMenuItem>
             {isAuthenticated ? (
               <NavigationMenuItem>
-                <Button variant="ghost" className="text-lg" onClick={() => signOut(() => navigate('/login'))}>
-                    Sign Out
+                <Button
+                  variant="ghost"
+                  className="text-lg"
+                  onClick={() => signOut(() => navigate('/login'))}
+                >
+                  Sign Out
                 </Button>
               </NavigationMenuItem>
             ) : null}

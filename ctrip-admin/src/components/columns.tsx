@@ -1,16 +1,15 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { StatusCell } from './status';
 import { Post } from './Post';
-import { Checkbox } from "@/components/ui/checkbox"
+import { Checkbox } from '@/components/ui/checkbox';
 
 export const columns: ColumnDef<Post>[] = [
   {
-    id: "select",
+    id: 'select',
     header: ({ table }) => (
       <Checkbox
         checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
+          table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
@@ -39,7 +38,7 @@ export const columns: ColumnDef<Post>[] = [
           </div>
         </div>
       );
-    }
+    },
   },
   {
     id: 'actions',
@@ -47,9 +46,20 @@ export const columns: ColumnDef<Post>[] = [
     cell: ({ row }) => {
       return (
         <div className="max-w-[100px]">
-            <StatusCell row={row.original} />
+          <StatusCell row={row.original} />
         </div>
-    )
+      );
+    },
+  },
+  {
+    accessorKey: 'status',
+    filterFn: 'equals',
+    cell: ({ getValue }) => {
+      const value = getValue<number>();
+      return value === 0 ? 'Pending' : value === 1 ? 'Approved' : 'Rejected';
+    },
+    meta: {
+      hidden: true,
     },
   },
 ];
