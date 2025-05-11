@@ -1,46 +1,38 @@
-// function Protected() {
-//   return (
-//     <div>
-//       <h1>Protected</h1>
-//     </div>
-//   );
-// }
+import { Post, columns } from '@/components/columns';
+import { DataTable } from '@/components/data-table';
 
-// export default Protected;
+// should be async
+function getData(): Post[] {
+  return [
+    {
+      postid: 1,
+      title: 'Post 1',
+      content: 'This is the content of post 1',
+      status: PENDING,
+      deleted: false,
+    },
+    {
+      postid: 2,
+      title: 'Post 2',
+      content: 'This is the content of post 2',
+      status: APPROVED,
+      deleted: false,
+    },
+    {
+      postid: 3,
+      title: 'Post 3',
+      content: 'This is the content of post 3',
+      status: REJECTED,
+      deleted: false,
+    },
+  ];
+}
 
-import * as React from 'react';
-import {
-  ColumnDef,
-  ColumnFiltersState,
-  SortingState,
-  VisibilityState,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from '@tanstack/react-table';
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from 'lucide-react';
-
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Input } from '@/components/ui/input'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-
+export default function Protected() {
+  const data = getData();
+  return (
+    <div className="container mx-auto py-10">
+      <DataTable columns={columns} data={data} />
+    </div>
+  );
+}

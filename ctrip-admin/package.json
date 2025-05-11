@@ -16,6 +16,8 @@
     "*.{tsx,ts,css,json}": "prettier --write"
   },
   "dependencies": {
+    "@radix-ui/react-select": "^2.2.4",
+    "@radix-ui/react-slot": "^1.2.2",
     "@tailwindcss/vite": "^4.1.6",
     "@tanstack/react-table": "^8.21.3",
     "axios": "^1.7.7",
