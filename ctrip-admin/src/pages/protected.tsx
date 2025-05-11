@@ -23,6 +23,7 @@ function getData(): Post[] {
       title: 'Post 3',
       content: 'This is the content of post 3',
       status: REJECTED,
+      rejection_message: 'Inappropriate content',
       deleted: false,
     },
   ];
