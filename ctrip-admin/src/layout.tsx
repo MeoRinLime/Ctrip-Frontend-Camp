@@ -20,12 +20,14 @@ function BasicLayout() {
   return (
     <div>
       <div className="flex w-full">
-        <div className="flex-1" />
+        <div className="flex-1">
+          后台管理系统
+        </div>
         <NavigationMenu>
           <NavigationMenuList className="ml-auto flex">
             <NavigationMenuItem>
               <Button variant="ghost" className="text-lg">
-                ...(Role)
+                角色：管理员/审核员
               </Button>
             </NavigationMenuItem>
             {isAuthenticated ? (
@@ -35,7 +37,7 @@ function BasicLayout() {
                   className="text-lg"
                   onClick={() => signOut(() => navigate('/login'))}
                 >
-                  Sign Out
+                  登出
                 </Button>
               </NavigationMenuItem>
             ) : null}

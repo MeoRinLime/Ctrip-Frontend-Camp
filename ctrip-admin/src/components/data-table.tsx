@@ -64,10 +64,10 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
             <SelectValue placeholder="Filter by status" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="All">Filter by status</SelectItem>
-            <SelectItem value="0">Pending</SelectItem>
-            <SelectItem value="1">Approved</SelectItem>
-            <SelectItem value="2">Rejected</SelectItem>
+            <SelectItem value="All">按状态筛选</SelectItem>
+            <SelectItem value="0">待审核</SelectItem>
+            <SelectItem value="1">已通过</SelectItem>
+            <SelectItem value="2">未通过</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -106,7 +106,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No results.
+                  无搜索结果。
                 </TableCell>
               </TableRow>
             )}
@@ -120,7 +120,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
         >
-          Previous
+          上一页
         </Button>
         <Button
           variant="outline"
@@ -128,7 +128,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
         >
-          Next
+          下一页
         </Button>
       </div>
     </div>

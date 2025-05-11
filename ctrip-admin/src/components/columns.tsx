@@ -45,7 +45,7 @@ export const columns: ColumnDef<Post>[] = [
     // header: 'Status',
     cell: ({ row }) => {
       return (
-        <div className="max-w-[100px]">
+        <div className="max-w-[150px]">
           <StatusCell row={row.original} />
         </div>
       );

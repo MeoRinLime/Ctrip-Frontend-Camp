@@ -43,18 +43,18 @@ export function StatusCell({ row }: { row: Post }) {
     <AlertDialog open={openRejectionDialog} onOpenChange={setOpenRejectionDialog}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Reject Post</AlertDialogTitle>
+          <AlertDialogTitle>拒绝该游记</AlertDialogTitle>
           <AlertDialogDescription>
             <Textarea
-              placeholder="Reason to reject"
+              placeholder="拒绝原因"
               value={rejectionMessage}
               onChange={(e) => setRejectionMessage(e.target.value)}
             />
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={() => setRejectionMessage('')}>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={rejectPost}>Reject</AlertDialogAction>
+          <AlertDialogCancel onClick={() => setRejectionMessage('')}>取消</AlertDialogCancel>
+          <AlertDialogAction onClick={rejectPost}>确认拒绝</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
@@ -66,12 +66,12 @@ export function StatusCell({ row }: { row: Post }) {
         <>
           <DropdownMenu>
             <DropdownMenuTrigger>
-              <Button variant="outline">Pending</Button>
+              <Button variant="outline">待审核</Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem onSelect={approvePost}>Approve</DropdownMenuItem>
+              <DropdownMenuItem onSelect={approvePost}>通过</DropdownMenuItem>
               <DropdownMenuItem onSelect={() => setOpenRejectionDialog(true)}>
-                Reject...
+                拒绝...
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -81,11 +81,11 @@ export function StatusCell({ row }: { row: Post }) {
         <>
           <DropdownMenu>
             <DropdownMenuTrigger>
-              <Button variant="approval">Approved</Button>
+              <Button variant="approval">已通过</Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuItem onSelect={() => setOpenRejectionDialog(true)}>
-                Reject...
+                拒绝...
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -95,10 +95,10 @@ export function StatusCell({ row }: { row: Post }) {
         <div className="flex">
           <DropdownMenu>
             <DropdownMenuTrigger>
-              <Button variant="destructive">Rejected</Button>
+              <Button variant="destructive">未通过</Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem onSelect={approvePost}>Approve</DropdownMenuItem>
+              <DropdownMenuItem onSelect={approvePost}>通过</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
           <div className="max-w-[200px] break-words whitespace-pre-line pl-3">
