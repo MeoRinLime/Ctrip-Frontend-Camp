@@ -7,9 +7,23 @@ import {
 import { Button } from "@/components/ui/button";
 import { Post } from "./Post";
 import { useState } from "react";
+import {
+  AlertDialog,
+  // AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
+import { Textarea } from "@/components/ui/textarea"
 
 export function StatusCell({ row }: { row: Post }) {
   const [status, setStatus] = useState(row.status);
+  const [openRejectionDialog, setOpenRejectionDialog] = useState(false);
+  const [rejectionMessage, setRejectionMessage] = useState("");
 
   const approvePost = () => {
     console.log("Approve post");
@@ -18,33 +32,57 @@ export function StatusCell({ row }: { row: Post }) {
   };
 
   const rejectPost = () => {
-    console.log("Reject post");
-    
+    console.log("Reject post:", rejectionMessage);
     // After API call to the database is back,
     setStatus(REJECTED);
+    setOpenRejectionDialog(false);
+    setRejectionMessage("");
   };
+
+  const rejectAlertDialog = (
+    <AlertDialog open={openRejectionDialog} onOpenChange={setOpenRejectionDialog}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Reject Post</AlertDialogTitle>
+          <AlertDialogDescription>
+            <Textarea placeholder="Reason to reject" value={rejectionMessage} onChange={e => setRejectionMessage(e.target.value)}/>
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel onClick={() => setRejectionMessage("")}>Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={rejectPost}>Reject</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  )
 
   return (
     <div>
       {status === PENDING ? (
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <Button variant="outline">Pending</Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem onSelect={approvePost}>Approve</DropdownMenuItem>
-            <DropdownMenuItem onSelect={rejectPost}>Reject...</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <Button variant="outline">Pending</Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onSelect={approvePost}>Approve</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => setOpenRejectionDialog(true)}>Reject...</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          {rejectAlertDialog}
+        </>
       ) : status === APPROVED ? (
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <Button variant="approval">Approved</Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem onSelect={rejectPost}>Reject...</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <Button variant="approval">Approved</Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onSelect={() => setOpenRejectionDialog(true)}>Reject...</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          {rejectAlertDialog}
+        </>
       ) : (
         <div>
         <DropdownMenu>
