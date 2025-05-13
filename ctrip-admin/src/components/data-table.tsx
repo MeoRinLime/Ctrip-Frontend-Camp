@@ -61,7 +61,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
           }}
         >
           <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Filter by status" />
+            <SelectValue placeholder="按状态筛选" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="All">按状态筛选</SelectItem>
@@ -97,7 +97,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
                     // @ts-expect-error Hidden might report as undefined.
                     .filter((cell) => !cell.column.columnDef.meta?.hidden)
                     .map((cell) => (
-                      <TableCell key={cell.id}>
+                      <TableCell key={cell.id} style={{ width: cell.column.getSize ? cell.column.getSize() : undefined }}>
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
                     ))}
