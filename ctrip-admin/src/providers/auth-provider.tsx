@@ -126,6 +126,7 @@ function AuthProvider({ children }: AuthProviderProps) {
   return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
 }
 
+// eslint-disable-next-line
 export function useAuth() {
   const context = useContext(AuthContext);
 
