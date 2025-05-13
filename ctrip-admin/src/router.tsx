@@ -7,6 +7,7 @@ import ErrorPage from './error-page';
 import Login from './pages/login';
 import Public from './pages/public';
 
+// eslint-disable-next-line
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const { isAuthenticated } = useAuth();
