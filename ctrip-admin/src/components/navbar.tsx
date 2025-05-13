@@ -23,7 +23,7 @@ function NavBar() {
           {isAuthenticated ? (
             <>
               <NavigationMenuItem>
-                <Button variant="ghost" className="text-lg">
+                <Button variant="ghost" className="text-lg" disabled>
                   角色：管理员/审核员
                 </Button>
               </NavigationMenuItem>

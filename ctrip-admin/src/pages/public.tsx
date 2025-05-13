@@ -57,7 +57,7 @@ function Public() {
   };
 
   if (isAuthenticated) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/protected" replace />;
   }
 
   return (
