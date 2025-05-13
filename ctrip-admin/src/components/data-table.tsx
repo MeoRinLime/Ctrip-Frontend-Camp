@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useState } from 'react';
+import rejectPostDialog from './rejectPostDialog';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -26,6 +27,10 @@ interface DataTableProps<TData, TValue> {
 export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState({});
+
+  const [status, setStatus] = useState(0); // temporary
+  const [openRejectionDialog, setOpenRejectionDialog] = useState(false);
+  const [rejectionMessage, setRejectionMessage] = useState('');
 
   const table = useReactTable({
     data,
@@ -45,7 +50,16 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
           <>
             <Button variant="extremely_destructive">批量删除</Button>
             <Button variant="approval">批量通过</Button>
-            <Button variant="destructive">批量拒绝</Button>
+            <Button variant="destructive" onClick={() => setOpenRejectionDialog(true)}>
+              批量拒绝
+            </Button>
+            {rejectPostDialog({
+              openRejectionDialog,
+              setOpenRejectionDialog,
+              rejectionMessage,
+              setRejectionMessage,
+              setStatus,
+            })}
           </>
         )}
         <div className="flex-1" />

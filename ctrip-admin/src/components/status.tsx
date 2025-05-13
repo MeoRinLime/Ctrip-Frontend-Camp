@@ -7,18 +7,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Post } from './Post';
 import { useState } from 'react';
-import {
-  AlertDialog,
-  // AlertDialogTrigger,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogFooter,
-  AlertDialogTitle,
-  AlertDialogDescription,
-  AlertDialogCancel,
-  AlertDialogAction,
-} from '@/components/ui/alert-dialog';
-import { Textarea } from '@/components/ui/textarea';
+import rejectPostDialog from './rejectPostDialog';
 
 export function StatusCell({ row }: { row: Post }) {
   const [status, setStatus] = useState(row.status);
@@ -30,35 +19,6 @@ export function StatusCell({ row }: { row: Post }) {
     // After API call to the database is back,
     setStatus(APPROVED);
   };
-
-  const rejectPost = () => {
-    console.log('Reject post:', rejectionMessage);
-    // After API call to the database is back,
-    setStatus(REJECTED);
-    setOpenRejectionDialog(false);
-    setRejectionMessage('');
-  };
-
-  const rejectAlertDialog = (
-    <AlertDialog open={openRejectionDialog} onOpenChange={setOpenRejectionDialog}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>拒绝该游记</AlertDialogTitle>
-          <AlertDialogDescription>
-            <Textarea
-              placeholder="拒绝原因"
-              value={rejectionMessage}
-              onChange={(e) => setRejectionMessage(e.target.value)}
-            />
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel onClick={() => setRejectionMessage('')}>取消</AlertDialogCancel>
-          <AlertDialogAction onClick={rejectPost}>确认拒绝</AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
-  );
 
   return (
     <div>
@@ -75,7 +35,13 @@ export function StatusCell({ row }: { row: Post }) {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          {rejectAlertDialog}
+          {rejectPostDialog({
+            openRejectionDialog,
+            setOpenRejectionDialog,
+            rejectionMessage,
+            setRejectionMessage,
+            setStatus,
+          })}
         </>
       ) : status === APPROVED ? (
         <>
@@ -89,7 +55,13 @@ export function StatusCell({ row }: { row: Post }) {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          {rejectAlertDialog}
+          {rejectPostDialog({
+            openRejectionDialog,
+            setOpenRejectionDialog,
+            rejectionMessage,
+            setRejectionMessage,
+            setStatus,
+          })}
         </>
       ) : (
         <div className="flex">
