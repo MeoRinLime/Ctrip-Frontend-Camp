@@ -8,14 +8,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 import {
   Select,
   SelectContent,
@@ -32,20 +25,30 @@ interface DataTableProps<TData, TValue> {
 
 export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [rowSelection, setRowSelection] = useState({});
 
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    state: { columnFilters },
+    state: { columnFilters, rowSelection },
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
+    onRowSelectionChange: setRowSelection,
   });
 
   return (
     <div>
-      <div className="flex justify-end py-4">
+      <div className="flex py-4 space-x-4">
+        {table.getSelectedRowModel().rows.length > 0 && (
+          <>
+            <Button variant="extremely_destructive">批量删除</Button>
+            <Button variant="approval">批量通过</Button>
+            <Button variant="destructive">批量拒绝</Button>
+          </>
+        )}
+        <div className="flex-1" />
         <Select
           onValueChange={(value) => {
             setColumnFilters(
@@ -97,7 +100,10 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
                     // @ts-expect-error Hidden might report as undefined.
                     .filter((cell) => !cell.column.columnDef.meta?.hidden)
                     .map((cell) => (
-                      <TableCell key={cell.id} style={{ width: cell.column.getSize ? cell.column.getSize() : undefined }}>
+                      <TableCell
+                        key={cell.id}
+                        style={{ width: cell.column.getSize ? cell.column.getSize() : undefined }}
+                      >
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
                     ))}
