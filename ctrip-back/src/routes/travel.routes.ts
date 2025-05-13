@@ -36,27 +36,6 @@ router.get('/', travelController.getTravelList);
 
 /**
  * @swagger
- * /api/travels/{id}:
- *   get:
- *     summary: 获取游记详情
- *     tags: [Travels]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: integer
- *         required: true
- *         description: 游记ID
- *     responses:
- *       200:
- *         description: 获取成功
- *       404:
- *         description: 游记不存在
- */
-router.get('/:id', travelController.getTravelDetail);
-
-/**
- * @swagger
  * /api/travels/user:
  *   get:
  *     summary: 获取当前用户的游记列表
@@ -80,7 +59,28 @@ router.get('/:id', travelController.getTravelDetail);
  *       401:
  *         description: 未授权
  */
-router.get('/user/list', authenticateUser, travelController.getUserTravels);
+router.get('/user', authenticateUser, travelController.getUserTravels);
+
+/**
+ * @swagger
+ * /api/travels/{id}:
+ *   get:
+ *     summary: 获取游记详情
+ *     tags: [Travels]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: 游记ID
+ *     responses:
+ *       200:
+ *         description: 获取成功
+ *       404:
+ *         description: 游记不存在
+ */
+router.get('/:id', travelController.getTravelDetail);
 
 /**
  * @swagger

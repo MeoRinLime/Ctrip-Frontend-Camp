@@ -37,11 +37,11 @@ const uploadPath = process.env.FILE_STORAGE_PATH || path.join(__dirname, '../upl
 app.use('/uploads', express.static(uploadPath));
 logger.info(`Serving static files from: ${uploadPath}`);
 
-// 设置路由
-setupRoutes(app);
-
 // 设置Swagger文档
 setupSwagger(app);
+
+// 设置路由
+setupRoutes(app);
 
 // 错误处理中间件
 app.use(errorHandler);

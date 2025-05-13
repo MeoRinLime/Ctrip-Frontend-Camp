@@ -15,7 +15,7 @@ const authController = new AuthController();
  *     requestBody:
  *       required: true
  *       content:
- *         multipart/form-data:
+ *         application/json:
  *           schema:
  *             type: object
  *             properties:
@@ -25,16 +25,13 @@ const authController = new AuthController();
  *                 type: string
  *               nickname:
  *                 type: string
- *               avatar:
- *                 type: string
- *                 format: binary
  *     responses:
  *       201:
  *         description: 注册成功
  *       400:
  *         description: 请求数据验证失败
  */
-router.post('/register', uploadAvatar, authController.register);
+router.post('/register', authController.register);
 
 /**
  * @swagger
@@ -88,15 +85,12 @@ router.get('/profile', authenticateUser, authController.getCurrentUser);
  *     requestBody:
  *       required: true
  *       content:
- *         multipart/form-data:
+ *         application/json:
  *           schema:
  *             type: object
  *             properties:
  *               nickname:
  *                 type: string
- *               avatar:
- *                 type: string
- *                 format: binary
  *     responses:
  *       200:
  *         description: 更新成功
@@ -105,7 +99,35 @@ router.get('/profile', authenticateUser, authController.getCurrentUser);
  *       401:
  *         description: 未授权
  */
-router.put('/profile', authenticateUser, uploadAvatar, authController.updateProfile);
+router.put('/profile', authenticateUser, authController.updateProfile);
+
+/**
+ * @swagger
+ * /api/auth/avatar:
+ *   post:
+ *     summary: 上传/更新用户头像
+ *     tags: [Authentication]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               avatar:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: 头像上传成功
+ *       400:
+ *         description: 请求数据验证失败
+ *       401:
+ *         description: 未授权
+ */
+router.post('/avatar', authenticateUser, uploadAvatar, authController.updateAvatar);
 
 /**
  * @swagger

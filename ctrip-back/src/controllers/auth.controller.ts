@@ -4,7 +4,6 @@ import { AppError } from '../middlewares/error-handler';
 
 export class AuthController {
   private authService = new AuthService();
-
   // 用户注册
   register = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
@@ -15,18 +14,11 @@ export class AuthController {
         throw new AppError('用户名、密码和昵称不能为空', 400);
       }
 
-      // 获取头像URL（如果有上传的话）
-      let avatarUrl;
-      if (req.file && 'fileUrl' in req.file) {
-        avatarUrl = (req.file as Express.Multer.File & { fileUrl: string }).fileUrl;
-      }
-
       // 创建用户
       const user = await this.authService.register({
         username,
         password,
         nickname,
-        avatarUrl,
       });
 
       // 生成JWT令牌
@@ -103,7 +95,6 @@ export class AuthController {
       next(error);
     }
   };
-
   // 更新用户资料
   updateProfile = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
@@ -113,15 +104,8 @@ export class AuthController {
 
       const { nickname } = req.body;
       
-      // 获取头像URL（如果有上传的话）
-      let avatarUrl;
-      if (req.file && 'fileUrl' in req.file) {
-        avatarUrl = (req.file as Express.Multer.File & { fileUrl: string }).fileUrl;
-      }
-
       const updatedUser = await this.authService.updateUserProfile((req.user as any).id, {
         nickname,
-        avatarUrl,
       });
 
       res.json({
@@ -138,7 +122,6 @@ export class AuthController {
       next(error);
     }
   };
-
   // 修改密码
   changePassword = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
@@ -158,6 +141,40 @@ export class AuthController {
       res.json({
         success: true,
         message: '密码修改成功',
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  // 更新用户头像
+  updateAvatar = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      if (!req.user) {
+        throw new AppError('未授权', 401);
+      }
+
+      // 检查是否有头像上传
+      if (!req.file || !('fileUrl' in req.file)) {
+        throw new AppError('请上传头像', 400);
+      }
+
+      const avatarUrl = (req.file as Express.Multer.File & { fileUrl: string }).fileUrl;
+
+      // 更新用户头像
+      const updatedUser = await this.authService.updateUserProfile((req.user as any).id, {
+        avatarUrl,
+      });
+
+      res.json({
+        success: true,
+        data: {
+          id: updatedUser.id,
+          username: updatedUser.username,
+          nickname: updatedUser.nickname,
+          avatarUrl: updatedUser.avatarUrl,
+        },
+        message: '头像更新成功',
       });
     } catch (error) {
       next(error);

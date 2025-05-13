@@ -68,7 +68,7 @@ export const handleDBError = (error: Error | DatabaseError | unknown): { message
 // 验证文件存储路径
 export const validateStoragePath = (): { isValid: boolean; message: string } => {
   try {
-    const useCloudStorage = process.env.NODE_ENV === 'production' && process.env.FILE_STORAGE_PATH;
+    const useCloudStorage = process.env.FILE_STORAGE_PATH;
     const storagePath = useCloudStorage
       ? process.env.FILE_STORAGE_PATH
       : path.join(__dirname, '../../', process.env.UPLOAD_DIRECTORY || 'uploads');

@@ -9,32 +9,26 @@ import { logger } from '../utils/logger';
 
 // 确保上传目录存在
 const createUploadDirs = (): void => {
-  // 判断是使用云服务器路径还是本地路径
-  const useCloudStorage = process.env.NODE_ENV === 'production' && process.env.FILE_STORAGE_PATH;
-  const baseDir = process.env.UPLOAD_DIRECTORY || 'uploads';
+  // 始终使用云服务器路径
+  const storagePath = process.env.FILE_STORAGE_PATH || '/var/www/uploads';
   const dirs = ['images', 'videos', 'avatars'];
   
   try {
     dirs.forEach(dir => {
-      // 根据环境确定存储路径
-      let fullPath;
-      if (useCloudStorage) {
-        fullPath = path.join(process.env.FILE_STORAGE_PATH as string, dir);
-      } else {
-        fullPath = path.join(__dirname, '../../', baseDir, dir);
-      }
+      // 云服务器存储路径
+      const fullPath = path.join(storagePath, dir);
       
       // 创建目录（如果不存在）
       if (!fs.existsSync(fullPath)) {
         fs.mkdirSync(fullPath, { recursive: true });
-        logger.info(`Created upload directory: ${fullPath}`);
+        logger.info(`Created cloud upload directory: ${fullPath}`);
       }
     });
     
-    logger.info(`File storage configured: ${useCloudStorage ? 'Cloud server storage' : 'Local storage'}`);
+    logger.info(`File storage configured: Cloud server storage at ${storagePath}`);
   } catch (error) {
     logger.error(`Error creating upload directories: ${error instanceof Error ? error.message : 'Unknown error'}`);
-    throw new Error('无法创建上传目录，请检查文件系统权限');
+    throw new Error('无法创建云服务器上传目录，请检查文件系统权限');
   }
 };
 
@@ -52,15 +46,9 @@ const storage = multer.diskStorage({
       uploadType = 'avatars';
     }
     
-    // 判断是使用云服务器路径还是本地路径
-    const useCloudStorage = process.env.NODE_ENV === 'production' && process.env.FILE_STORAGE_PATH;
-    let uploadPath;
-    
-    if (useCloudStorage) {
-      uploadPath = path.join(process.env.FILE_STORAGE_PATH as string, uploadType);
-    } else {
-      uploadPath = path.join(__dirname, '../../', process.env.UPLOAD_DIRECTORY || 'uploads', uploadType);
-    }
+    // 始终使用云服务器路径
+    const storagePath = process.env.FILE_STORAGE_PATH || '/var/www/uploads';
+    const uploadPath = path.join(storagePath, uploadType);
     
     logger.debug(`File upload destination: ${uploadPath}`);
     cb(null, uploadPath);
@@ -115,20 +103,19 @@ export const uploadImages: RequestHandler = (req, res, next) => {
         next(new AppError(`上传错误: ${err.message}`, 400));
       }
     } else if (err) {
-      next(new AppError(err.message, 400));
-    } else {      // 处理上传的文件路径
+      next(new AppError(err.message, 400));    } else {      // 处理上传的文件路径
       if (req.files && Array.isArray(req.files)) {
-        const fileServer = process.env.FILE_SERVER_URL || 'http://localhost:3000';
+        const fileServer = process.env.FILE_SERVER_URL || 'http://47.120.46.215:3000';
         
         // 为每个文件添加可访问的URL
         req.files.forEach((file: Express.Multer.File & { fileUrl?: string }) => {
-          // 获取相对路径并转换为URL格式
-          const relativePath = path.relative(path.join(__dirname, '../../'), file.path);
-          const normalizedPath = relativePath.replace(/\\/g, '/');
+          // 从文件路径中提取文件夹和文件名
+          const fileName = path.basename(file.path);
+          const dirName = path.basename(path.dirname(file.path));
           
           // 生成完整URL
-          file.fileUrl = `${fileServer}/${normalizedPath}`;
-          logger.debug(`File uploaded: ${file.originalname}, accessible at: ${file.fileUrl}`);
+          file.fileUrl = `${fileServer}/uploads/${dirName}/${fileName}`;
+          logger.debug(`File uploaded to cloud: ${file.originalname}, accessible at: ${file.fileUrl}`);
         });
       }
       next();
@@ -151,19 +138,18 @@ export const uploadVideo: RequestHandler = (req, res, next) => {
       }
     } else if (err) {
       logger.error(`Video upload error: ${err.message}`);
-      next(new AppError(err.message, 400));
-    } else {
+      next(new AppError(err.message, 400));    } else {
       // 处理上传的文件路径
       if (req.file) {
-        const fileServer = process.env.FILE_SERVER_URL || 'http://localhost:3000';
+        const fileServer = process.env.FILE_SERVER_URL || 'http://47.120.46.215:3000';
         
-        // 获取相对路径并转换为URL格式
-        const relativePath = path.relative(path.join(__dirname, '../../'), req.file.path);
-        const normalizedPath = relativePath.replace(/\\/g, '/');
+        // 从文件路径中提取文件夹和文件名
+        const fileName = path.basename(req.file.path);
+        const dirName = path.basename(path.dirname(req.file.path));
         
         // 生成完整URL
-        (req.file as Express.Multer.File & { fileUrl: string }).fileUrl = `${fileServer}/${normalizedPath}`;
-        logger.debug(`Video uploaded: ${req.file.originalname}, accessible at: ${(req.file as Express.Multer.File & { fileUrl: string }).fileUrl}`);
+        (req.file as Express.Multer.File & { fileUrl: string }).fileUrl = `${fileServer}/uploads/${dirName}/${fileName}`;
+        logger.debug(`Video uploaded to cloud: ${req.file.originalname}, accessible at: ${(req.file as Express.Multer.File & { fileUrl: string }).fileUrl}`);
       }
       next();
     }
@@ -185,19 +171,18 @@ export const uploadAvatar: RequestHandler = (req, res, next) => {
       }
     } else if (err) {
       logger.error(`Avatar upload error: ${err.message}`);
-      next(new AppError(err.message, 400));
-    } else {
+      next(new AppError(err.message, 400));    } else {
       // 处理上传的文件路径
       if (req.file) {
-        const fileServer = process.env.FILE_SERVER_URL || 'http://localhost:3000';
+        const fileServer = process.env.FILE_SERVER_URL || 'http://47.120.46.215:3000';
         
-        // 获取相对路径并转换为URL格式
-        const relativePath = path.relative(path.join(__dirname, '../../'), req.file.path);
-        const normalizedPath = relativePath.replace(/\\/g, '/');
+        // 从文件路径中提取文件夹和文件名
+        const fileName = path.basename(req.file.path);
+        const dirName = path.basename(path.dirname(req.file.path));
         
         // 生成完整URL
-        (req.file as Express.Multer.File & { fileUrl: string }).fileUrl = `${fileServer}/${normalizedPath}`;
-        logger.debug(`Avatar uploaded: ${req.file.originalname}, accessible at: ${(req.file as Express.Multer.File & { fileUrl: string }).fileUrl}`);
+        (req.file as Express.Multer.File & { fileUrl: string }).fileUrl = `${fileServer}/uploads/${dirName}/${fileName}`;
+        logger.debug(`Avatar uploaded to cloud: ${req.file.originalname}, accessible at: ${(req.file as Express.Multer.File & { fileUrl: string }).fileUrl}`);
       }
       next();
     }

@@ -5,12 +5,10 @@ import { User } from '../models/user.entity';
 import { Admin } from '../models/admin.entity';
 
 // 扩展 Express 的 Request 接口，添加 user 属性
-declare global {
-  namespace Express {
-    interface Request {
-      user?: User | Admin;
-      userType?: 'user' | 'admin';
-    }
+declare module 'express' {
+  interface Request {
+    user?: User | Admin;
+    userType?: 'user' | 'admin';
   }
 }
 
