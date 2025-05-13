@@ -101,7 +101,7 @@ export function StatusCell({ row }: { row: Post }) {
               <DropdownMenuItem onSelect={approvePost}>通过</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <div className="max-w-[200px] break-words whitespace-pre-line pl-3">
+          <div className="max-w-[100px] break-words whitespace-pre-line pl-3">
             {row.rejection_message}
           </div>
         </div>
