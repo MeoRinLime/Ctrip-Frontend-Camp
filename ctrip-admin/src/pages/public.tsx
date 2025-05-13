@@ -1,45 +1,63 @@
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
-import { useState } from "react"
-import axios from "axios"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { useState } from 'react';
+import axios from 'axios';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '@/providers/auth-provider';
 
 function Public() {
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState("")
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { isAuthenticated, signIn } = useAuth();
+  const from = location.state?.from?.pathname || '/';
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setLoading(true)
-    setError("")
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+
+    // Manual check for username and password === "1"
+    if (username === '1' && password === '1') {
+      setLoading(false);
+      // Simulate login success (you can add redirect or token logic here)
+      console.log('Login success: manual admin');
+      // For example:
+      // localStorage.setItem("token", "manual-token")
+      // navigate("/dashboard")
+      signIn({ username, password }, () => {
+        navigate(from, { replace: true });
+      });
+      return;
+    }
 
     try {
-      const response = await axios.post("/api/login", {
+      const response = await axios.post('/api/login', {
         username,
         password,
-      })
+      });
 
-      // Handle success — maybe store token or redirect
-      console.log("Login success:", response.data)
-      // For example:
-      // localStorage.setItem("token", response.data.token)
-      // router.push("/dashboard")
-
+      signIn(response.data, () => {
+        // Redirect or perform any action after successful login
+        console.log('User logged in:', response.data);
+        navigate(from, { replace: true });
+      });
     } catch (err: any) {
-      console.error("Login error:", err)
-      setError(err?.response?.data?.message || "登录失败，请重试")
+      console.error('Login error:', err);
+      setError(err?.response?.data?.message || '登录失败，请重试');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
+  };
+
+  if (isAuthenticated) {
+    return <Navigate to="/" replace />;
   }
 
   return (
@@ -74,13 +92,13 @@ function Public() {
           </CardContent>
           <CardFooter className="flex justify-end pt-4">
             <Button type="submit" disabled={loading}>
-              {loading ? "登录中..." : "登录"}
+              {loading ? '登录中...' : '登录'}
             </Button>
           </CardFooter>
         </form>
       </Card>
     </div>
-  )
+  );
 }
 
-export default Public
+export default Public;
